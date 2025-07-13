@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoGuardian AI - Smart Waste Management for Nigeria</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#00B894',
+                        secondary: '#00A085',
+                        accent: '#FDCB6E',
+                        danger: '#E17055'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #00B894 0%, #00A085 50%, #74B816 100%);
+        }
+        .waste-card {
+            transition: all 0.3s ease;
+        }
+        .waste-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .scanning-animation {
+            background: linear-gradient(45deg, transparent 30%, rgba(0, 184, 148, 0.3) 50%, transparent 70%);
+            background-size: 200% 200%;
+            animation: scan 2s linear infinite;
+        }
+        @keyframes scan {
+            0% { background-position: -200% -200%; }
+            100% { background-position: 200% 200%; }
+        }
+        .impact-counter {
+            animation: countUp 2s ease-out;
+        }
+        @keyframes countUp {
+            from { transform: scale(0.5); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .loading-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
+    <!-- Header -->
+    <header class="gradient-bg text-white shadow-2xl">
+        <div class="container mx-auto px-4 py-6">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <div class="bg-white bg-opacity-20 p-3 rounded-xl">
+                        <svg class="w-10 h-10" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
+                            <path d="M9 12l2 2 4-4" stroke="white" stroke-width="2" fill="none"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-bold">EcoGuardian AI</h1>
+                        <p class="text-lg opacity-90">Smart Waste Management for Nigeria</p>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="bg-white bg-opacity-20 px-4 py-2 rounded-full">
+                        <span class="text-sm font-semibold">🇳🇬 #3MTTLearningCommunity</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Quick Stats Dashboard -->
+    <section class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg text-center">
+                <div class="text-3xl font-bold text-primary impact-counter" id="itemsScanned">0</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Items Scanned</div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg text-center">
+                <div class="text-3xl font-bold text-secondary impact-counter" id="co2Saved">0kg</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">CO₂ Saved</div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg text-center">
+                <div class="text-3xl font-bold text-accent impact-counter" id="wasteReports">0</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Reports Filed</div>
+            </div>
+            <div class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg text-center">
+                <div class="text-3xl font-bold text-primary">🏆</div>
+                <div class="text-sm text-gray-600 dark:text-gray-400">Eco Score</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Features -->
+    <main class="container mx-auto px-4">
+        <!-- Waste Identification Section -->
+        <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                <span class="mr-3">🔍</span>
+                AI Waste Identifier
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-xl p-8 text-center bg-gray-50 dark:bg-gray-700 mb-4">
+                        <div id="uploadArea" class="cursor-pointer">
+                            <svg class="mx-auto h-16 w-16 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                            </svg>
+                            <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-2">Upload Waste Image</h3>
+                            <p class="text-gray-600 dark:text-gray-400">Take a photo or upload an image of your waste item</p>
+                            <input type="file" id="wasteImage" accept="image/*" class="hidden" onchange="analyzeWaste()">
+                            <button onclick="document.getElementById('wasteImage').click()" class="mt-4 bg-primary hover:bg-secondary text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300">
+                                📸 Choose Image
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="text-center">
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mb-4">Or describe your waste item:</p>
+                        <div class="flex gap-2">
+                            <input 
+                                type="text" 
+                                id="wasteDescription" 
+                                placeholder="e.g., plastic bottle, banana peel, old phone..."
+                                class="flex-1 p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white text-base focus:ring-2 focus:ring-primary focus:border-transparent"
+                            >
+                            <button onclick="analyzeWasteText()" class="bg-primary hover:bg-secondary text-white px-6 py-3 rounded-lg font-semibold transition-all duration-300">
+                                🔍 Analyze
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div id="analysisResult" class="hidden">
+                        <div id="loadingAnalysis" class="text-center py-8">
+                            <div class="scanning-animation bg-primary bg-opacity-20 rounded-lg p-6 mb-4">
+                                <div class="text-4xl mb-4">🤖</div>
+                                <div class="loading-pulse text-lg font-semibold text-primary">Analyzing with AI...</div>
+                                <div class="text-sm text-gray-600 dark:text-gray-400 mt-2">Identifying waste type and environmental impact</div>
+                            </div>
+                        </div>
+                        <div id="wasteAnalysis" class="hidden"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Waste Categories Guide -->
+        <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                <span class="mr-3">♻️</span>
+                Nigerian Waste Management Guide
+            </h2>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="waste-card bg-green-50 dark:bg-green-900 p-6 rounded-xl border border-green-200 dark:border-green-700">
+                    <div class="text-4xl mb-3">🌱</div>
+                    <h3 class="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">Organic Waste</h3>
+                    <p class="text-sm text-green-700 dark:text-green-300 mb-3">Food scraps, garden waste</p>
+                    <button onclick="getWasteInfo('organic')" class="text-green-600 dark:text-green-400 text-sm font-semibold hover:underline">Learn More →</button>
+                </div>
+
+                <div class="waste-card bg-blue-50 dark:bg-blue-900 p-6 rounded-xl border border-blue-200 dark:border-blue-700">
+                    <div class="text-4xl mb-3">♻️</div>
+                    <h3 class="text-lg font-semibold text-blue-800 dark:text-blue-200 mb-2">Recyclables</h3>
+                    <p class="text-sm text-blue-700 dark:text-blue-300 mb-3">Plastic, glass, metal, paper</p>
+                    <button onclick="getWasteInfo('recyclable')" class="text-blue-600 dark:text-blue-400 text-sm font-semibold hover:underline">Learn More →</button>
+                </div>
+
+                <div class="waste-card bg-red-50 dark:bg-red-900 p-6 rounded-xl border border-red-200 dark:border-red-700">
+                    <div class="text-4xl mb-3">⚠️</div>
+                    <h3 class="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">Hazardous</h3>
+                    <p class="text-sm text-red-700 dark:text-red-300 mb-3">Batteries, chemicals, e-waste</p>
+                    <button onclick="getWasteInfo('hazardous')" class="text-red-600 dark:text-red-400 text-sm font-semibold hover:underline">Learn More →</button>
+                </div>
+
+                <div class="waste-card bg-gray-50 dark:bg-gray-700 p-6 rounded-xl border border-gray-200 dark:border-gray-600">
+                    <div class="text-4xl mb-3">🗑️</div>
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">General Waste</h3>
+                    <p class="text-sm text-gray-700 dark:text-gray-300 mb-3">Non-recyclable items</p>
+                    <button onclick="getWasteInfo('general')" class="text-gray-600 dark:text-gray-400 text-sm font-semibold hover:underline">Learn More →</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Report Waste Issues -->
+        <section class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-6 flex items-center">
+                <span class="mr-3">📍</span>
+                Report Waste Issues
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-8">
+                <div>
+                    <textarea 
+                        id="wasteReport" 
+                        placeholder="Describe the waste issue: location, type of problem, urgency level..."
+                        class="w-full p-4 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white text-base focus:ring-2 focus:ring-primary focus:border-transparent resize-none"
+                        rows="4"
+                    ></textarea>
+                    
+                    <div class="mt-4 grid grid-cols-2 gap-4">
+                        <select id="urgencyLevel" class="p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white text-base focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <option value="">Urgency Level</option>
+                            <option value="low">Low - General cleanup</option>
+                            <option value="medium">Medium - Needs attention</option>
+                            <option value="high">High - Health risk</option>
+                            <option value="critical">Critical - Emergency</option>
+                        </select>
+                        
+                        <input 
+                            type="text" 
+                            id="location" 
+                            placeholder="Location (e.g., Lagos, Kano)"
+                            class="p-3 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-800 dark:text-white text-base focus:ring-2 focus:ring-primary focus:border-transparent"
+                        >
+                    </div>
+                    
+                    <button onclick="submitWasteReport()" class="w-full mt-4 bg-primary hover:bg-secondary text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105">
+                        📋 Submit Report
+                    </button>
+                </div>
+                
+                <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white mb-4">Recent Community Reports</h3>
+                    <div id="recentReports" class="space-y-3">
+                        <div class="bg-white dark:bg-gray-600 p-3 rounded-lg">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm font-semibold text-red-600">HIGH PRIORITY</span>
+                                <span class="text-xs text-gray-500">2 hours ago</span>
+                            </div>
+                            <p class="text-sm text-gray-700 dark:text-gray-300">Illegal dumping site in Ikeja, Lagos causing water contamination</p>
+                        </div>
+                        <div class="bg-white dark:bg-gray-600 p-3 rounded-lg">
+                            <div class="flex justify-between items-start mb-2">
+                                <span class="text-sm font-semibold text-yellow-600">MEDIUM</span>
+                                <span class="text-xs text-gray-500">5 hours ago</span>
+                            </div>
+                            <p class="text-sm text-gray-700 dark:text-gray-300">Overflowing waste bins at Abuja market area</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Response Section -->
+        <section id="aiResponseSection" class="hidden bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mb-8">
+            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-4 flex items-center">
+                <span class="mr-2">🤖</span>
+                EcoGuardian AI Analysis
+            </h3>
+            <div id="aiResponse" class="prose dark:prose-invert max-w-none"></div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="gradient-bg text-white py-8 mt-12">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-4">
+                <h3 class="text-xl font-bold mb-2">EcoGuardian AI</h3>
+                <p class="opacity-90">Building a cleaner, greener Nigeria with AI technology</p>
+            </div>
+            <div class="flex justify-center space-x-6 mb-4">
+                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">#3MTTLearningCommunity</span>
+                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">#My3MTT</span>
+                <span class="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm">🇳🇬 Made in Nigeria</span>
+            </div>
+            <p class="text-sm opacity-75">Empowering communities to fight climate change through smart waste management</p>
+        </div>
+    </footer>
+
+    <script>
+        // Dark mode setup
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // State management
+        let appStats = {
+            itemsScanned: 0,
+            co2Saved: 0,
+            wasteReports: 0
+        };
+
+        // Poe API handler setup
+        window.Poe.registerHandler("eco-analysis", (result, context) => {
+            const responseDiv = document.getElementById('aiResponse');
+            const loadingDiv = document.getElementById('loadingAnalysis');
+            const analysisDiv = document.getElementById('wasteAnalysis');
+            
+            if (result.responses && result.responses.length > 0) {
+                const message = result.responses[0];
+                
+                if (message.status === "error") {
+                    loadingDiv.classList.add('hidden');
+                    responseDiv.innerHTML = `
+                        <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                            <div class="text-red-700">❌ Analysis failed: ${message.statusText || 'Please try again'}</div>
+                        </div>
+                    `;
+                } else if (message.status === "incomplete") {
+                    loadingDiv.classList.add('hidden');
+                    analysisDiv.classList.remove('hidden');
+                    responseDiv.innerHTML = marked.parse(message.content);
+                    document.getElementById('aiResponseSection').classList.remove('hidden');
+                } else if (message.status === "complete") {
+                    loadingDiv.classList.add('hidden');
+                    analysisDiv.classList.remove('hidden');
+                    responseDiv.innerHTML = marked.parse(message.content);
+                    document.getElementById('aiResponseSection').classList.remove('hidden');
+                    updateStats('itemsScanned');
+                    updateStats('co2Saved', Math.floor(Math.random() * 5) + 1);
+                }
+            }
+        });
+
+        window.Poe.registerHandler("waste-info", (result, context) => {
+            const responseDiv = document.getElementById('aiResponse');
+            
+            if (result.responses && result.responses.length > 0) {
+                const message = result.responses[0];
+                
+                if (message.status === "complete") {
+                    responseDiv.innerHTML = marked.parse(message.content);
+                    document.getElementById('aiResponseSection').classList.remove('hidden');
+                    document.getElementById('aiResponseSection').scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+
+        async function analyzeWaste() {
+            const fileInput = document.getElementById('wasteImage');
+            if (!fileInput.files || !fileInput.files[0]) {
+                showCustomAlert('Please select an image first!');
+                return;
+            }
+
+            showAnalysisSection();
+
+            const prompt = `You are EcoGuardian AI, an expert in waste management and environmental sustainability for Nigeria.
+
+A user has uploaded an image of waste for identification and disposal guidance.
+
+Please analyze this image and provide:
+
+## 🔍 Waste Identification
+- What type of waste is this?
+- Materials/components identified
+
+## ♻
